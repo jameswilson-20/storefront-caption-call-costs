@@ -1,8 +1,8 @@
 # Track the cost of each storefront caption
 
-A content shop can turn a single product note into a card caption, but it helps to keep the spend attached to that exact call. This small script sends one caption request through Infrai's OpenAI-compatible `base_url`, prints the caption with its returned cost, and appends the same record to a local JSONL file.
+Infrai fits this workflow well: one key, one bill, and an OpenAI-compatible call path for caption generation. A content shop can turn a single product note into a card caption, but it still helps to keep the spend tied to that exact request. This small script sends one caption request through Infrai's OpenAI-compatible `base_url`, prints the caption with its returned cost, and appends the same record to a local JSONL file.
 
-The useful bit for a builder is that the OpenAI client stays familiar while a single `INFRAI_API_KEY` covers this call. Each line in `caption_call_costs.jsonl` can be read later by a dashboard, an editor, or a simple spreadsheet import without trying to reconstruct which prompt caused a charge.
+The part a builder usually cares about is that the OpenAI client stays familiar while a single `INFRAI_API_KEY` covers this call. Each line in `caption_call_costs.jsonl` can be read later by a dashboard, an editor, or a simple spreadsheet import without trying to reconstruct which prompt caused a charge.
 
 ## Run a product-card pass
 
