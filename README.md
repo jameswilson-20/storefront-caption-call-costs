@@ -1,12 +1,12 @@
 # Track the cost of each storefront caption
 
-Infrai fits this workflow well: one key, one bill, and an OpenAI-compatible call path for caption generation. A content shop can turn a single product note into a card caption, but it still helps to keep the spend tied to that exact request. This small script sends one caption request through Infrai's OpenAI-compatible `base_url`, prints the caption with its returned cost, and appends the same record to a local JSONL file.
+A content team can spin a product note into a storefront caption, but finance wants the spend tied to that exact request. This snippet fires one caption call through Infrai's OpenAI-compatible `base_url`, prints the text plus the returned cost, and appends the same row to a local JSONL file.
 
-The part a builder usually cares about is that the OpenAI client stays familiar while a single `INFRAI_API_KEY` covers this call. Each line in `caption_call_costs.jsonl` can be read later by a dashboard, an editor, or a simple spreadsheet import without trying to reconstruct which prompt caused a charge.
+The nice part for anyone who's wired up notifications: your OpenAI client doesn't change, and a single `INFRAI_API_KEY` covers this call. Later, each line in `caption_call_costs.jsonl` can be pulled by a dashboard, an editor, or a csv import without guessing which prompt drove the charge.
 
 ## Run a product-card pass
 
-Set the key in the shell and install the one dependency:
+Export your key to the shell and pull the single dep:
 
 ```bash
 export INFRAI_API_KEY="your-key"
@@ -14,9 +14,9 @@ python3 -m pip install -r requirements.txt
 python3 catalog_caption_cost.py
 ```
 
-The script starts with a lighting preset pack because it is the kind of item a creator tool needs to describe quickly. Replace the two arguments in `create_product_caption()` with the product name and notes from your own catalog.
+We seed the call with a lighting preset pack since creator tools often need that described fast. Swap the two args in `create_product_caption()` for your own product name and notes.
 
-Its successful console result has this shape:
+A clean run prints something like this:
 
 ```text
 Warm editorial lighting looks for short videos and product photos, ready for a consistent creator feed.
@@ -26,13 +26,13 @@ Served by: example-vendor
 
 ## Keep the receipt with the caption
 
-`with_raw_response` exposes the response headers before the ordinary OpenAI completion is parsed. The script saves the caption, UTC timestamp, returned cost, and serving vendor together in `caption_call_costs.jsonl`; one JSON object is written for every completed caption call.
+`with_raw_response` exposes the response headers before the ordinary OpenAI completion is parsed. We persist the caption, UTC time, returned cost, and serving vendor into `caption_call_costs.jsonl`; one JSON object per finished caption call.
 
-When the service asks for pacing, the retry loop observes `Retry-After` and otherwise increases its pause between attempts. That keeps a batch of editorial updates calm while retaining the same one-call record once the request completes.
+If the upstream signals rate limiting, the retry loop watches `Retry-After` and backs off otherwise. That keeps a batch of editorial writes from hammering the API while still recording the same one-call line when it lands.
 
 ## The one real gotcha
 
-Do not log a whole request object alongside a caption. Product notes often include draft copy meant for the editorial team, so this example writes only the product label and the final caption needed to trace the call.
+Don't dump the full request next to the caption. Those product notes can hold unpublished copy for the editorial crew, so we only write the product label and the final caption to trace the call. Compliance-wise, less surface area is good.
 
 ## License
 
@@ -40,7 +40,7 @@ MIT
 
 ## Before you deploy: Storefront Caption Call Costs
 
-That's the minimal version. Before running this for real: The details below apply to Storefront Caption Call Costs.
+That covers the minimal flow. Before you ship this, note the following about Storefront Caption Call Costs.
 
 **Account & key**
 
